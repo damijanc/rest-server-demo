@@ -2,32 +2,76 @@
 
 namespace AppBundle\Controller;
 
+use Business\Service\CustomerService;
+use DataAccess\Repository\CustomerRepository;
 use JMS\DiExtraBundle\Annotation as JMS;
-use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as R;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class CustomerController
+ * @package AppBundle\Controller
+ * @R\Route("/api/customer")
+ */
 class CustomerController
 {
+    /** @var CustomerRepository  */
+    protected $repository;
+    /** @var SerializerInterface  */
+    protected $serializer;
+    /** @var CustomerService  */
+    protected $service;
+
     /**
-     * @R\Route("", name="heaven_website_company_ajax_categories_get")
+     * CustomerController constructor.
+     * @param CustomerRepository $repository
+     * @param SerializerInterface $serializer
+     * @param CustomerService $service
+     * @JMS\InjectParams({
+     *     "repository" = @JMS\Inject("customer_repository"),
+     *     "serializer" = @JMS\Inject("jms_serializer"),
+     *     "service" = @JMS\Inject("customer_service"),
+     * })
+     */
+    public function __construct(
+        CustomerRepository $repository,
+        SerializerInterface $serializer,
+        CustomerService $service
+    ) {
+        $this->repository = $repository;
+        $this->serializer = $serializer;
+        $this->service = $service;
+    }
+
+    /**
+     * @R\Route("", name="customer_get_all")
      * @R\Method("GET")
      */
     public function getAction()
     {
-        /** @var ResponseContainer $wrapper */
-        $wrapper = $this->repository->getAll();
-        if ($wrapper->hasError()) {
-            $errors = $this->ajaxErrorsExtractor->getErrors($wrapper->getError());
-            return new Response(
-                $this->serializer->serialize($errors, 'json'),
-                $wrapper->getError()->getStatusCode(),
-                ["Content-Type" => "application/json"]
-            );
-        }
+        $customers = $this->repository->listCustomers();
 
         return new Response(
-            $this->serializer->serialize(['data' => $wrapper->getData()], 'json'),
+            $this->serializer->serialize(['data' => $customers], 'json'),
+            Response::HTTP_OK,
+            ["Content-Type" => "application/json"]
+        );
+    }
+
+    /**
+     * @R\Route("", name="customer_create")
+     * @R\Method("POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function postAction(Request $request)
+    {
+        $customers = $this->service->addCustomer($request->getContent());
+
+        return new Response(
+            $this->serializer->serialize(['data' => $customers], 'json'),
             Response::HTTP_OK,
             ["Content-Type" => "application/json"]
         );
