@@ -10,9 +10,13 @@ class TransactionRepository
 {
     /** @var RegistryInterface  */
     protected $registry;
+    protected $customerRepository;
 
-    public function __construct(RegistryInterface $registry)
-    {
+    public function __construct(
+        RegistryInterface $registry,
+        CustomerRepository $customerRepository
+    ) {
+        $this->customerRepository = $customerRepository;
         $this->registry = $registry;
     }
 
@@ -28,12 +32,38 @@ class TransactionRepository
     }
 
 
-    public function createTransaction(Transaction $transaction)
+    public function makeTransaction($customerId, $amount)
     {
-        $manager = $this->registry->getManager('Entity:Transaction');
-        $manager->persist($transaction);
-        $manager->flush();
-        return $transaction;
+        $customer = $this->customerRepository->getCustomerById($customerId);
+
+        $em = $this->registry->getEntityManager();
+        $em->beginTransaction();
+
+        try {
+            $balance = $em->getRepository('Entity:Balance')->findOneBy(['customer_id' => $customerId]);
+
+            $newBalance = $balance->getBalance() + $amount;
+            if ($newBalance < 0) {
+                throw new \Exception('balance can\'t be negative');
+            }
+
+            $balance->setBalance($newBalance);
+            $em->persist($balance);
+
+            $transaction = new Transaction();
+            $transaction->setCustomer($customer);
+            $transaction->setAmount($amount);
+
+            $em->persist($transaction);
+            $em->flush();
+            $em->commit();
+
+            return $transaction;
+        }
+        catch (\Exception $e) {
+            $em->rollback();
+            throw $e;
+        }
     }
 
 }

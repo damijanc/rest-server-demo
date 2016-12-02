@@ -36,7 +36,7 @@ class Balance
     private $id;
 
     /**
-     * @var \AppBundle\Entity\Customer
+     * @var \DataAccess\Entity\Customer
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Customer")
      * @ORM\JoinColumns({
@@ -108,11 +108,11 @@ class Balance
     /**
      * Set customer
      *
-     * @param \AppBundle\Entity\Customer $customer
+     * @param \DataAccess\Entity\Customer $customer
      *
      * @return Balance
      */
-    public function setCustomer(\AppBundle\Entity\Customer $customer = null)
+    public function setCustomer(\DataAccess\Entity\Customer $customer = null)
     {
         $this->customer = $customer;
 
@@ -122,7 +122,7 @@ class Balance
     /**
      * Get customer
      *
-     * @return \AppBundle\Entity\Customer
+     * @return \DataAccess\Entity\Customer
      */
     public function getCustomer()
     {
