@@ -4,12 +4,26 @@ namespace Business\Service;
 
 use AppBundle\Model\TransactionModel;
 use DataAccess\Repository\TransactionRepository;
+use JMS\DiExtraBundle\Annotation as JMS;
 
+/**
+ * Class TransactionService
+ * @package Business\Service
+ *
+ * @JMS\Service("transaction_service")
+ */
 class TransactionService
 {
     /** @var TransactionRepository  */
     protected $repository;
 
+    /**
+     * TransactionService constructor.
+     * @param TransactionRepository $repository
+     * @JMS\InjectParams({
+     *     "repository" = @JMS\Inject("transaction_repository"),
+     * })
+     */
     public function __construct(TransactionRepository $repository)
     {
         $this->repository = $repository;

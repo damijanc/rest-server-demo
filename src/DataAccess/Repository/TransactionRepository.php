@@ -4,14 +4,30 @@ namespace DataAccess\Repository;
 
 use DataAccess\Entity\Transaction;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use JMS\DiExtraBundle\Annotation as JMS;
 
-
+/**
+ * Class TransactionRepository
+ * @package DataAccess\Repository
+ *
+ * @JMS\Service("transaction_repository")
+ */
 class TransactionRepository
 {
     /** @var RegistryInterface  */
     protected $registry;
     protected $customerRepository;
 
+    /**
+     * TransactionRepository constructor.
+     * @param RegistryInterface $registry
+     * @param CustomerRepository $customerRepository
+     *
+     * @JMS\InjectParams({
+     *     "registry" = @JMS\Inject("doctrine"),
+     *     "customerRepository" = @JMS\Inject("customer_repository")
+     * })
+     */
     public function __construct(
         RegistryInterface $registry,
         CustomerRepository $customerRepository
