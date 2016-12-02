@@ -48,12 +48,23 @@ class CustomerService
         $customer->setLastName($customerModel->getLastName());
         $customer->setEmail($customerModel->getEmail());
         $customer->setGender($customerModel->getGender());
+        $customer->setBonus(rand(5,20) * 0.01);
 
-        return $this->repository->createCustomer($customer);
+        return $this->repository->saveCustomer($customer);
     }
 
-    protected function addBonusToNewCustomer($customerId)
+    public function updateCustomer($json)
     {
+        /** @var CustomerModel $customerModel */
+        $customerModel = $this->serializer->deserialize($json, CustomerModel::class, 'json');
 
+        $customer = $this->repository->getCustomerById($customerModel->getId());
+        $customer->setCountry($customerModel->getCountry());
+        $customer->setFirstName($customerModel->getFirstName());
+        $customer->setLastName($customerModel->getLastName());
+        $customer->setEmail($customerModel->getEmail());
+        $customer->setGender($customerModel->getGender());
+
+        return $this->repository->saveCustomer($customer);
     }
 }

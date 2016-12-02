@@ -40,12 +40,11 @@ class CustomerRepository
         return $repository->find($customerId);
     }
 
-    public function createCustomer(Customer $customer)
+    public function saveCustomer(Customer $customer)
     {
         $manager = $this->registry->getManager();
         $manager->persist($customer);
         $manager->flush();
         return $customer;
     }
-
 }

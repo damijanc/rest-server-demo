@@ -56,6 +56,13 @@ class Customer
      */
     private $id;
 
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="bonus", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $bonus = '0';
+
 
 
     /**
@@ -186,5 +193,28 @@ class Customer
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set bonus
+     *
+     * @param float $bonus
+     *
+     * @return Customer
+     */
+    public function setBonus($bonus)
+    {
+        $this->bonus = $bonus;
+        return $this;
+    }
+
+    /**
+     * Get bonus
+     *
+     * @return float
+     */
+    public function getBonus()
+    {
+        return $this->bonus;
     }
 }
