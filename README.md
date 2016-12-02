@@ -10,6 +10,10 @@ Example rest service using Symfony 3, Doctrine and MariaDB
 * Run in project root ```composer install```
 * Setup database ```mysql -u root < ./Model/generation.sql```
 
+## How to run
+
+* You can run the server with builtin php server just by
+running ```php bin/console server:run```
 
 ## Tests
 
