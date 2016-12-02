@@ -6,7 +6,7 @@ php:
 
 before_script:
   - composer install
-  - mysql -uroot < Model/creation.sql
+  - mysql -u root < Model/creation.sql
 
 services:
   - mysql
