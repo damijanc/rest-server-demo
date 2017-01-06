@@ -1,5 +1,5 @@
 {
-    "name": "damijanc/knipster",
+    "name": "damijanc/rest-server-demo",
     "license": "MIT",
     "type": "project",
     "autoload": {
